@@ -155,15 +155,15 @@
    :training-cases (first train-and-test-cases)
 
    :oracle-function snow-day-solver
-   :input-parameterization [(cag/create-new-parameter :integer 1 9998)
-                            (cag/create-new-parameter :float -9998 9998)
-                            (cag/create-new-parameter :float -9998 9998)
-                            (cag/create-new-parameter :float -9998 9998)]
+   :input-parameterization [(cag/create-new-parameter :integer 1 20)
+                            (cag/create-new-parameter :float 0.0 20.0)
+                            (cag/create-new-parameter :float 0.0 10.0)
+                            (cag/create-new-parameter :float 0.0 1.0)]
    :output-stacks [:float]
 
    :sub-training-cases-selection :intelligent ; :random ; :intelligent
    :num-of-cases-in-sub-training-set 5
-   :num-of-edge-cases-in-sub-training-set 2 ; probably not 5 since there's only 1 input
+   :num-of-edge-cases-in-sub-training-set 2
    :sub-training-cases '()
 
        ;; Human-driven counterexamples
@@ -187,13 +187,8 @@
    :population-size 1000
    :max-generations 300
    :parent-selection :lexicase
-   :genetic-operator-probabilities {:alternation 0.2
-                                    :uniform-mutation 0.2
-                                    :uniform-close-mutation 0.1
-                                    [:alternation :uniform-mutation] 0.5}
-   :alternation-rate 0.01
-   :alignment-deviation 10
-   :uniform-mutation-rate 0.01
+   :genetic-operator-probabilities {:uniform-addition-and-deletion 1.0}
+   :uniform-addition-and-deletion-rate 0.09
    :problem-specific-report custom-report
    :problem-specific-initial-report initial-report
    :report-simplifications 0

@@ -192,22 +192,17 @@
   {:error-function mirror-image-error-function
    :training-cases (first mirror-image-train-and-test-cases)
 
+   :input-parameterization [(cag/create-new-parameter :vector_integer 50 50 (cag/create-new-parameter :integer 1 9999))
+                            (cag/create-new-parameter :vector_integer 50 50 (cag/create-new-parameter :integer 1 9999))]
+   :output-stacks [:boolean]
+   :oracle-function mirror-image-solver
+
    :sub-training-cases-selection :intelligent ; :random ; :intelligent
    :num-of-cases-in-sub-training-set 5
-   :num-of-edge-cases-in-sub-training-set 5 ; probably not 5 since there's only 1 input
+   :num-of-edge-cases-in-sub-training-set 2
    :sub-training-cases '()
 
    :atom-generators mirror-image-atom-generators
-   :max-points 1200
-   :max-genome-size-in-initial-program 150
-   :evalpush-limit 600
-   :population-size 1000
-   :max-generations 300
-   :parent-selection :lexicase
-   :genetic-operator-probabilities {:alternation 0.2
-                                    :uniform-mutation 0.2
-                                    :uniform-close-mutation 0.1
-                                    [:alternation :uniform-mutation] 0.5}
 
    ;; Human-driven counterexamples
    :counterexample-driven true
@@ -222,17 +217,23 @@
    :num-of-cases-added-from-output-selection 5
    :num-of-cases-used-for-branch-coverage 1000
    :num-of-cases-added-from-branch-coverage 5
-   :input-parameterization [(cag/create-new-parameter :vector_integer 50 50 (cag/create-new-parameter :integer 1 9999))
-                            (cag/create-new-parameter :vector_integer 50 50 (cag/create-new-parameter :integer 1 9999))]
-   :output-stacks [:boolean]
-   :oracle-function mirror-image-solver
 
-   :alternation-rate 0.01
-   :alignment-deviation 10
-   :uniform-mutation-rate 0.01
+   :max-points 2000
+   :max-genome-size-in-initial-program 250
+   :evalpush-limit 2000
+   :population-size 1000
+   :max-generations 300
+   :parent-selection :lexicase
+   :genetic-operator-probabilities {:uniform-addition-and-deletion 1.0}
+   :uniform-addition-and-deletion-rate 0.09
    :problem-specific-report mirror-image-report
    :problem-specific-initial-report mirror-image-initial-report
    :report-simplifications 0
    :final-report-simplifications 5000
-   :max-error 1
-   })
+   :max-error 1})
+
+
+(comment
+  (cag/create-new-parameter :vector_integer 1 50 (cag/create-new-parameter :integer 1 9999))
+  
+  )

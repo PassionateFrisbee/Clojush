@@ -185,7 +185,7 @@
                                                    (second train-and-test-cases))
    :training-cases (first train-and-test-cases)
    :oracle-function camel-case-solver
-   :input-parameterization [(cag/create-new-parameter :string 2 9998 [:lower-case] ["-" "_"])]
+   :input-parameterization [(cag/create-new-parameter :string 1 20 [:lower-case] ["-" "_"])]
    :output-stacks [:string]
 
    :sub-training-cases-selection :intelligent ; :random ; :intelligent
@@ -200,8 +200,8 @@
    ;; Options, as a list: :hard-coded ; :randomly-generated ; :edge-cases ; :selecting-new-cases-based-on-outputs
    :counterexample-driven-case-generators '(:edge-cases :branch-coverage-test :selecting-new-cases-based-on-outputs :randomly-generated)
 
-   :max-num-of-cases-added-from-edge 5
-   :num-of-cases-added-from-random 5
+   :max-num-of-cases-added-from-edge 2
+   :num-of-cases-added-from-random 8
    :num-of-cases-used-for-output-selection 1000
    :num-of-cases-added-from-output-selection 5
    :num-of-cases-used-for-branch-coverage 1000
@@ -214,13 +214,8 @@
    :population-size 1000
    :max-generations 300
    :parent-selection :lexicase
-   :genetic-operator-probabilities {:alternation 0.2
-                                    :uniform-mutation 0.2
-                                    :uniform-close-mutation 0.1
-                                    [:alternation :uniform-mutation] 0.5}
-   :alternation-rate 0.01
-   :alignment-deviation 10
-   :uniform-mutation-rate 0.01
+   :genetic-operator-probabilities {:uniform-addition-and-deletion 1.0}
+   :uniform-addition-and-deletion-rate 0.09
    :problem-specific-report custom-report
    :problem-specific-initial-report initial-report
    :report-simplifications 0

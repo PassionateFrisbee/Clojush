@@ -13,8 +13,7 @@
         [clojush pushstate interpreter random util globals]
         clojush.instructions.tag
         [clojure.math numeric-tower combinatorics])
-  (:require [clojush.pushgp.case-auto-generation :as cag]
-            [clojure.spec.alpha :as s]))
+  (:require [clojush.pushgp.case-auto-generation :as cag]))
 
 ; Atom generators
 (def last-index-of-zero-atom-generators
@@ -162,18 +161,10 @@
   {:error-function (make-last-index-of-zero-error-function-from-cases (first last-index-of-zero-train-and-test-cases)
                                                                       (second last-index-of-zero-train-and-test-cases))
    :training-cases (first last-index-of-zero-train-and-test-cases)
-   :input-constrains "last-index-of-zero"
+   :problem-specific-input-constraints :last-index-of-zero
    :atom-generators last-index-of-zero-atom-generators
-   :max-points 1200
-   :max-genome-size-in-initial-program 150
-   :evalpush-limit 600
-   :population-size 1000
-   :max-generations 300
-   :parent-selection :lexicase
-   :genetic-operator-probabilities {:alternation 0.2
-                                    :uniform-mutation 0.2
-                                    :uniform-close-mutation 0.1
-                                    [:alternation :uniform-mutation] 0.5}
+
+
    :oracle-function last-index-of-zero-getter
    ;;need to add 0 to the vector or it will break
    :input-parameterization [(cag/create-new-parameter :vector_integer 1 50 (cag/create-new-parameter :integer -50 50))]
@@ -181,7 +172,7 @@
 
    :sub-training-cases-selection :intelligent ; :random ; :intelligent
    :num-of-cases-in-sub-training-set 1
-   :num-of-edge-cases-in-sub-training-set 1 ; probably not 5 since there's only 1 input
+   :num-of-edge-cases-in-sub-training-set 0 ; 5 and 2 ##TMH: Not adding zeros to added cases for some reason
    :sub-training-cases '()
 
        ;; Human-driven counterexamples
@@ -191,105 +182,24 @@
    ;; Options, as a list: :hard-coded ; :randomly-generated ; :edge-cases ; :selecting-new-cases-based-on-outputs
    :counterexample-driven-case-generators '(:edge-cases :branch-coverage-test :selecting-new-cases-based-on-outputs :randomly-generated)
 
-   :max-num-of-cases-added-from-edge 5
-   :num-of-cases-added-from-random 5
+   :max-num-of-cases-added-from-edge 2
+   :num-of-cases-added-from-random 8
    :num-of-cases-used-for-output-selection 1000
    :num-of-cases-added-from-output-selection 5
    :num-of-cases-used-for-branch-coverage 1000
    :num-of-cases-added-from-branch-coverage 5
 
-   :alternation-rate 0.01
-   :alignment-deviation 10
-   :uniform-mutation-rate 0.01
+   :max-points 2000
+   :max-genome-size-in-initial-program 250
+   :evalpush-limit 2000
+   :population-size 1000
+   :max-generations 300
+   :parent-selection :lexicase
+   :genetic-operator-probabilities {:uniform-addition-and-deletion 1.0}
+   :uniform-addition-and-deletion-rate 0.09
    :problem-specific-report last-index-of-zero-report
    :problem-specific-initial-report last-index-of-zero-initial-report
    :report-simplifications 0
    :final-report-simplifications 5000
    :max-error 1000000
    :single-vector-input true})
-
-
-;; INFORMATION ABOUT SPEC: https://clojure.org/guides/spec
-
-;; This defines a spec with the required properties:
-;;  - collection of ints, between 1 and 20 of them
-;;  - contains at least one 0
-(s/def ::vector-containing-zero
-  (s/and
-   (s/coll-of int? :kind vector? :min-count 1 :max-count 20)
-   #(some #{0} %)))
-
-
-(comment
-
-  ;; This is how you would check if a given piece of data is valid for the given spec
-  (s/valid? ::vector-containing-zero [1 2 3 9])
-  ;; => false
-
-  ;; This just defines the parameter for the problem (note I just copied from the argmap above,
-  ;; it looks like it doesn't match the problem requirements from the PSB1 paper.)
-  (def last-index-of-zero-parameter
-    (cag/create-new-parameter :vector_integer 1 50
-                              (cag/create-new-parameter :integer -50 50)))
-
-  (defn generate-inputs-speced
-    "Creates num-inputs number of inputs that satisfy my-spec. generator
-     is the function that generates a random input to check. I'd expect it
-     will be different per problem, and use the cag/generate-* functions."
-    [my-spec generator num-inputs]
-    (take num-inputs
-          (filter #(s/valid? my-spec %)
-                  (repeatedly generator))))
-
-  ;; Here's an example call, which shows how it can generate 10 inputs
-  ;; that all satisfy the spec.
-  (generate-inputs-speced ::vector-containing-zero
-                          #(cag/generate-vectorof last-index-of-zero-parameter)
-                          10)
-
-
-  ;; Can ignore everything below here. It turns out there's functionality for
-  ;; generating data in spec, but it both requires a different dependency
-  ;; and gives skewed results (for example, much more likely to include small
-  ;; ints than large ints.)
-
-  ;; (gen/generate (s/gen int?))
-
-
-  ;; (gen/sample (s/gen int?)
-  ;;             30)
-
-
-  ;; (gen/generate (s/gen ::vector-containing-zero))
-  ;; ;; => [123 27285 -19 -23429084 28 -603 -323584189 0 -13060790 168 -42 1031 2344620]
-
-
-  ;; (into (sorted-map)
-  ;;       (frequencies (map count
-  ;;                         (gen/sample (s/gen ::vector-containing-zero) 1000))))
-  ;; => {1 4,
-;;     2 15,
-;;     3 15,
-;;     4 21,
-;;     5 34,
-;;     6 30,
-;;     7 45,
-;;     8 37,
-;;     9 47,
-;;     10 50,
-;;     11 76,
-;;     12 57,
-;;     13 63,
-;;     14 68,
-;;     15 61,
-;;     16 66,
-;;     17 73,
-;;     18 72,
-;;     19 83,
-;;     20 83}
-
-  ;; (into (sorted-map)
-  ;;       (frequencies (map #(count (filter zero? %))
-  ;;                         (gen/sample (s/gen ::vector-containing-zero) 1000))))
-  ;; => {1 805, 2 131, 3 31, 4 16, 5 3, 6 4, 7 1, 8 3, 9 4, 10 1, 11 1}
-  )

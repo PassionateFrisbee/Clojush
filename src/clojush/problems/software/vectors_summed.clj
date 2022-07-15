@@ -172,16 +172,6 @@
    :sub-training-cases '()
 
    :atom-generators vectors-summed-atom-generators
-   :max-points 2000
-   :max-genome-size-in-initial-program 250
-   :evalpush-limit 1500
-   :population-size 1000
-   :max-generations 300
-   :parent-selection :lexicase
-   :genetic-operator-probabilities {:alternation 0.2
-                                    :uniform-mutation 0.2
-                                    :uniform-close-mutation 0.1
-                                    [:alternation :uniform-mutation] 0.5}
 
    ;; Human-driven counterexamples
    :counterexample-driven true
@@ -201,9 +191,15 @@
    :output-stacks [:vector_integer]
    :oracle-function vectors-summed-solver
 
-   :alternation-rate 0.01
-   :alignment-deviation 10
-   :uniform-mutation-rate 0.01
+
+   :max-points 2000
+   :max-genome-size-in-initial-program 250
+   :evalpush-limit 2000
+   :population-size 1000
+   :max-generations 300
+   :parent-selection :lexicase
+   :genetic-operator-probabilities {:uniform-addition-and-deletion 1.0}
+   :uniform-addition-and-deletion-rate 0.09
    :problem-specific-report vectors-summed-report
    :problem-specific-initial-report vectors-summed-initial-report
    :report-simplifications 0

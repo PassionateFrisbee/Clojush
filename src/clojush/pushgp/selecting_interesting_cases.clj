@@ -164,11 +164,12 @@
   "Runs the program best on all generated cases, and returns a list of the
   behaviors/results of the program on those cases."
   [best all-cases {:keys [output-stacks single-vector-input] :as argmap}]
-  (doall (for [[[input] [correct-output]] all-cases]
-           (let [inputs (if (or single-vector-input
-                                (not (coll? input)))
-                          (list input)
-                          input)
+  (doall (for [[input [correct-output]] all-cases]
+           (let [inputs input #_(if (or single-vector-input
+                                        (not (coll? input)))
+                                  (list input)
+                                  input)
+                 aaaaa (prn "HERE IS INPUT:" inputs)
                  start-state (reduce (fn [push-state in]
                                        (clojush.pushstate/push-item in :input push-state))
                                      (clojush.pushstate/push-item "" :output (clojush.pushstate/make-push-state))
@@ -250,20 +251,23 @@
                  (map (fn [training-set-output]
                         (let [training-output (getting-input-outside-the-vector training-set-output)
                               new-new-output (getting-input-outside-the-vector new-output)]
-                         (if (keyword? new-new-output)
-                           1000
-                           (Math/abs (-' training-output new-new-output))))) 
-                      current-training-set-output)) new-output-seq)
+                          (cond
+                            (keyword? new-new-output) 1000
+                            (and (nil? training-output) (nil? new-new-output)) 0
+                            (or (nil? training-output) (nil? new-new-output)) 1000
+                            :else (Math/abs (-' training-output new-new-output)))))
+                      current-training-set-output)) 
+               new-output-seq)
 
           (= output-type-1 :boolean)
           (map (fn [new-output]
                  (map (fn [training-set-output]
                         (let [training-output (getting-input-outside-the-vector training-set-output)
                               new-new-output (getting-input-outside-the-vector new-output)]
-                         (if (keyword? new-new-output) 
-                           1000
-                           (Math/abs (-' (if (identity training-output) 1 0)
-                                         (if (identity new-new-output) 1 0)))))) 
+                          (if (keyword? new-new-output)
+                            1000
+                            (Math/abs (-' (if (identity training-output) 1 0)
+                                          (if (identity new-new-output) 1 0))))))
                       current-training-set-output)) new-output-seq)
 
           (or (= output-type-1 :string) (= output-type-1 :output))
@@ -271,23 +275,25 @@
                  (map (fn [training-set-output]
                         (let [checked-new (getting-input-outside-the-vector new-output)
                               checked-training (getting-input-outside-the-vector training-set-output)]
-                         (if (keyword? checked-new)
-                           1000
-                           (util/levenshtein-distance checked-training checked-new)))) current-training-set-output)) new-output-seq)
+                          (if (keyword? checked-new)
+                            1000
+                            (util/levenshtein-distance checked-training checked-new)))) current-training-set-output)) new-output-seq)
 
           :else
           (map (fn [new-output]
-                 (map util/mean (map (fn [item1]
-                                       (let [item1-size (count item1)
-                                             item2-size (count new-output)
-                                             item1-set (set item1)
-                                             item2-set (set new-output)
-                                             size-difference (Math/abs (- item1-size item2-size))
-                                             result-difference (measure-output-difference item1 new-output (vector (nth output-type 1)))
-                                             num-of-distinct-elements (count (into (cset/difference item1-set item2-set)
-                                                                                   (cset/difference item2-set item1-set)))]
-                                         (conj (apply concat result-difference) num-of-distinct-elements size-difference)))
-                                     current-training-set-output)))
+                 (if (keyword? new-output)
+                   1000
+                   (map util/mean (map (fn [item1]
+                                         (let [item1-size (count item1)
+                                               item2-size (count new-output)
+                                               item1-set (set item1)
+                                               item2-set (set new-output)
+                                               size-difference (Math/abs (- item1-size item2-size))
+                                               result-difference (measure-output-difference item1 new-output (vector (nth output-type 1)))
+                                               num-of-distinct-elements (count (into (cset/difference item1-set item2-set)
+                                                                                     (cset/difference item2-set item1-set)))]
+                                           (conj (apply concat result-difference) num-of-distinct-elements size-difference)))
+                                       current-training-set-output))))
                new-output-seq))))
 
 (defn get-output-types

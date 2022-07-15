@@ -214,10 +214,31 @@
   {:error-function (make-error-function-from-cases (first train-and-test-cases)
                                                    (second train-and-test-cases))
    :training-cases (first train-and-test-cases)
-   :input-parameterization [(cag/create-new-parameter :vector_integer 2 9998 (cag/create-new-parameter :integer 1 9999)) 
-                            (cag/create-new-parameter :integer 2 (* 9999 2) )]
-   :output-stacks [:vector_integer]
+   :input-parameterization [(cag/create-new-parameter :vector_integer 2 20 (cag/create-new-parameter :integer -10000 10000))
+                            (cag/create-new-parameter :integer -20000 20000)]
+   :output-stacks [:output :output]
    :oracle-function find-pair-solver
+   :problem-specific-input-constraints :find-pair
+
+   :sub-training-cases-selection :intelligent ; :random ; :intelligent
+   :num-of-cases-in-sub-training-set 5
+   :num-of-edge-cases-in-sub-training-set 4 ; probably not 5 since there's only 1 input
+   :sub-training-cases '()
+
+       ;; Human-driven counterexamples
+   :counterexample-driven true
+   :counterexample-driven-case-checker :simulated-human ; :automatic ; :human ; :simulated-human
+
+   ;; Options, as a list: :hard-coded ; :randomly-generated ; :edge-cases ; :selecting-new-cases-based-on-outputs
+   :counterexample-driven-case-generators '(:edge-cases :branch-coverage-test :selecting-new-cases-based-on-outputs :randomly-generated)
+
+   :max-num-of-cases-added-from-edge 4
+   :num-of-cases-added-from-random 6
+   :num-of-cases-used-for-output-selection 1000
+   :num-of-cases-added-from-output-selection 5
+   :num-of-cases-used-for-branch-coverage 1000
+   :num-of-cases-added-from-branch-coverage 5
+
    :atom-generators atom-generators
    :max-points 2000
    :max-genome-size-in-initial-program 250

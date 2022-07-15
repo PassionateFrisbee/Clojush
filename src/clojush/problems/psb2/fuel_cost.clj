@@ -167,13 +167,13 @@
   {:error-function (make-error-function-from-cases (first train-and-test-cases)
                                                    (second train-and-test-cases))
    :training-cases (first train-and-test-cases)
-   :input-parameterization [(cag/create-new-parameter :vector_integer 1 99 (cag/create-new-parameter :integer 6 9994))]
+   :input-parameterization [(cag/create-new-parameter :vector_integer 1 20 (cag/create-new-parameter :integer 6 100000))]
    :output-stacks [:integer]
    :oracle-function fuel-cost-solver
 
    :sub-training-cases-selection :intelligent ; :random ; :intelligent
-   :num-of-cases-in-sub-training-set 10
-   :num-of-edge-cases-in-sub-training-set 5 ; probably not 5 since there's only 1 input
+   :num-of-cases-in-sub-training-set 5
+   :num-of-edge-cases-in-sub-training-set 2 ; probably not 5 since there's only 1 input
    :sub-training-cases '()
 
     ;; Human-driven counterexamples
@@ -183,8 +183,8 @@
    ;; Options, as a list: :hard-coded ; :randomly-generated ; :edge-cases ; :selecting-new-cases-based-on-outputs
    :counterexample-driven-case-generators '(:edge-cases :branch-coverage-test :selecting-new-cases-based-on-outputs :randomly-generated)
 
-   :max-num-of-cases-added-from-edge 5
-   :num-of-cases-added-from-random 5
+   :max-num-of-cases-added-from-edge 2
+   :num-of-cases-added-from-random 8
    :num-of-cases-used-for-output-selection 1000
    :num-of-cases-added-from-output-selection 5
    :num-of-cases-used-for-branch-coverage 1000

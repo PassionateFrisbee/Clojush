@@ -2,7 +2,7 @@
 #PBS -l nodes=1:ppn=8
 #PBS -l mem=20GB
 #PBS -q una-new
-#PBS -M jgfrazie@hamilton.edu
+#PBS -M thelmuth@hamilton.edu
 #PBS -m n
 #PBS -j oe
 #PBS -l walltime=72:00:00
@@ -29,7 +29,7 @@ DIRECTORY="/usr/local/research/compsci/helmuth/thelmuth/Results/human-driven-sim
 
 PUSHARGS=":genetic-operator-probabilities {:uniform-addition-and-deletion,1} :uniform-addition-and-deletion-rate 0.09 :print-timings true :max-program-executions 60000000 :max-generations 10e100"
 
-PROBLEM="clojush.problems.software.$NAMESPACE"
+PROBLEM="clojush.problems.$NAMESPACE"
 
 LEINCMD="lein with-profiles production trampoline run $PROBLEM $PUSHARGS"
 

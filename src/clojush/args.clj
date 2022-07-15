@@ -158,7 +158,10 @@
          :input-parameterization []
           ;; Information about inputs. Format: Vector containing maps, one per input
          
-         :input-constrains nil
+         :problem-specific-input-constraints nil
+          ;; Needs to be set if problem's inputs have specific constraints. For example,
+          ;; Last Index of Zero inputs must be vectors that contain at least one 0.
+          ;; See clojush.pushgp.selecting-interesting-cases for more info.
 
          :oracle-function nil
           ;; Oracle function used for simulating human-driven GP

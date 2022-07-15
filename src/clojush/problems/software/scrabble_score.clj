@@ -196,28 +196,10 @@
                                                                   (second scrabble-score-train-and-test-cases))
    :training-cases (first scrabble-score-train-and-test-cases)
    :atom-generators scrabble-score-atom-generators
-   :max-points 4000
-   :max-genome-size-in-initial-program 500
-   :evalpush-limit 2000
-   :population-size 1000
-   :max-generations 300
-   :parent-selection :lexicase
-   :genetic-operator-probabilities {:alternation 0.2
-                                    :uniform-mutation 0.2
-                                    :uniform-close-mutation 0.1
-                                    [:alternation :uniform-mutation] 0.5}
-   :alternation-rate 0.01
-   :alignment-deviation 10
-   :uniform-mutation-rate 0.01
-   :problem-specific-report scrabble-score-report
-   :problem-specific-initial-report scrabble-score-initial-report
-   :report-simplifications 0
-   :final-report-simplifications 5000
-   :max-error 1000
 
    :sub-training-cases-selection :intelligent ; :random ; :intelligent
-   :num-of-cases-in-sub-training-set 7
-   :num-of-edge-cases-in-sub-training-set 5 ; probably not 5 since there's only 1 input
+   :num-of-cases-in-sub-training-set 5
+   :num-of-edge-cases-in-sub-training-set 2 ; probably not 5 since there's only 1 input
    :sub-training-cases '()
    :oracle-function scrabble-score-calculator
    :input-parameterization [(cag/create-new-parameter :string 0 20 [:digits :lower-case :upper-case :specials] [])]
@@ -229,9 +211,24 @@
    ;; Options, as a list: :hard-coded ; :randomly-generated ; :edge-cases ; :selecting-new-cases-based-on-outputs
    :counterexample-driven-case-generators '(:edge-cases :branch-coverage-test :selecting-new-cases-based-on-outputs :randomly-generated)
 
-   :max-num-of-cases-added-from-edge 5
-   :num-of-cases-added-from-random 5
+   :max-num-of-cases-added-from-edge 2
+   :num-of-cases-added-from-random 8
    :num-of-cases-used-for-output-selection 1000
    :num-of-cases-added-from-output-selection 5
    :num-of-cases-used-for-branch-coverage 1000
-   :num-of-cases-added-from-branch-coverage 5})
+   :num-of-cases-added-from-branch-coverage 5
+   
+   :max-points 2000
+   :max-genome-size-in-initial-program 250
+   :evalpush-limit 2000
+   :population-size 1000
+   :max-generations 300
+   :parent-selection :lexicase
+   :genetic-operator-probabilities {:uniform-addition-and-deletion 1.0}
+   :uniform-addition-and-deletion-rate 0.09
+   
+   :problem-specific-report scrabble-score-report
+   :problem-specific-initial-report scrabble-score-initial-report
+   :report-simplifications 0
+   :final-report-simplifications 5000
+   :max-error 1000})
